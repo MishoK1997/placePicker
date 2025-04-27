@@ -7,11 +7,20 @@ import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import { sortPlacesByDistance } from './loc.js';
 
+
+// This side effect is intended to render places based on localStorage data
+// specifically, this data initializes the pickedPlaces state
+const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+const storedPlaces = storedIds.map(id =>
+  AVAILABLE_PLACES.find((place) => place.id === id)
+)
+
+
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position)=>{
@@ -42,6 +51,15 @@ function App() {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+
+    // This picked places data will be saved in local storage 
+    // Note that this is another example of Side effect that do not require useEffect()
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces'))|| []
+    if(storedIds.indexOf(id) === -1){
+      localStorage.setItem(
+        'selectedPlaces', 
+        JSON.stringify([id, ...storedIds]));
+    }
   }
 
   function handleRemovePlace() {
@@ -49,6 +67,14 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+
+
+    // Remove  saved places from local storage
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces'))
+    localStorage.setItem(
+      'selectedPlaces', 
+      JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current))
+    )
   }
 
   return (
