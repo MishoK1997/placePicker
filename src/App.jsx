@@ -21,7 +21,7 @@ function App() {
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position)=>{
       console.log('Location fetched');
@@ -37,10 +37,12 @@ function App() {
   function handleStartRemovePlace(id) {
     modal.current.open();
     selectedPlace.current = id;
+    setIsModalOpen(true);
   }
 
   function handleStopRemovePlace() {
     modal.current.close();
+    setIsModalOpen(false);
   }
 
   function handleSelectPlace(id) {
@@ -82,6 +84,8 @@ function App() {
       <Modal ref={modal}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
           onConfirm={handleRemovePlace}
         />
       </Modal>
