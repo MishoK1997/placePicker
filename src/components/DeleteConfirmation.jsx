@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState} from "react";
 
 export default function DeleteConfirmation({ isModalOpen, 
   setIsModalOpen,  onConfirm, onCancel }) {
@@ -15,6 +15,20 @@ export default function DeleteConfirmation({ isModalOpen,
   //   }
   
   // }, [isModalOpen])
+
+  const [ remainingTime, setRemainingTime] = useState(3000);
+
+  useEffect(()=> {
+    const interval = setInterval( ()=> {
+      console.log("Interval");
+      setRemainingTime(prevTime => prevTime - 10);
+    }, 10)
+
+    return () => {  
+      clearInterval(interval);
+    }
+  }, [])  
+
   useEffect(() => {
   console.log("Set timer")
     const timer =  setTimeout(()=> {
@@ -40,6 +54,7 @@ export default function DeleteConfirmation({ isModalOpen,
           Yes
         </button>
       </div>
+      <progress value={remainingTime} max={3000}/>
     </div>
   );
 }
