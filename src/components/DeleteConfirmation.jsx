@@ -3,21 +3,30 @@ import { useEffect } from "react";
 export default function DeleteConfirmation({ isModalOpen, 
   setIsModalOpen,  onConfirm, onCancel }) {
 
+  // useEffect(()=> {
+  //   console.log("DeleteConfirmation mounted");
+  //   if(isModalOpen) {
+  //     setTimeout(()=> onConfirm(), 3000);
+  //     setIsModalOpen(false);  
 
-  useEffect(()=> {
-    console.log("DeleteConfirmation mounted");
-    if(isModalOpen) {
-      setTimeout(()=> onConfirm(), 3000);
-      setIsModalOpen(false);  
+  //     return ()=> { 
+  //       clearTimeout();
+  //     }
+  //   }
+  
+  // }, [isModalOpen])
+  useEffect(() => {
+  console.log("Set timer")
+    const timer =  setTimeout(()=> {
+      onConfirm();
+    }, 3000);
 
-      return ()=> { 
-        clearTimeout();
-      }
+    return ()=> {
+      console.log("Clear timer")
+      clearTimeout(timer);
     }
-  
-  }, [isModalOpen])
-  
-    
+  }, [onConfirm]);
+
 
   return (
     <div id="delete-confirmation">
